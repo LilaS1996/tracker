@@ -1,178 +1,453 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Segoe UI', -apple-system, sans-serif;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    padding: 20px;
+    padding: clamp(10px, 4vw, 20px);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .app {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 25px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 28px;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.3);
     overflow: hidden;
+    position: relative;
+    z-index: 2;
 }
 
 header {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
-    padding: 30px 40px;
+    padding: clamp(20px, 6vw, 30px) clamp(20px, 5vw, 40px);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: clamp(12px, 3vw, 20px);
+    text-align: center;
 }
 
-header h1 { font-size: 32px; display: flex; align-items: center; gap: 15px; }
-.stats { display: flex; gap: 40px; font-size: 18px; font-weight: 600; }
+header h1 { 
+    font-size: clamp(24px, 8vw, 36px); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    gap: clamp(10px, 3vw, 18px); 
+    font-weight: 700;
+}
 
-.tabs {
+.stats { 
+    display: flex; 
+    justify-content: center;
+    gap: clamp(20px, 6vw, 40px); 
+    font-size: clamp(14px, 4vw, 18px); 
+    font-weight: 600;
+}
+
+.desktop-tabs {
     display: flex;
     background: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
 }
 
 .tab-btn {
-    flex: 1; padding: 20px; background: none; border: none; 
-    color: #6c757d; font-size: 16px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    transition: all 0.3s;
+    flex: 1; 
+    padding: clamp(16px, 4vw, 22px); 
+    background: none; 
+    border: none; 
+    color: #6c757d; 
+    font-size: clamp(14px, 3.5vw, 16px); 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: clamp(8px, 2vw, 12px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    white-space: nowrap;
+    touch-action: manipulation;
 }
 
-.tab-btn.active { background: white; color: #667eea; font-weight: 600; }
+.tab-btn.active { 
+    background: white; 
+    color: #667eea; 
+    font-weight: 700;
+    position: relative;
+}
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
 
-.tab-content { display: none; padding: 40px; }
+.tab-content { display: none; padding: clamp(25px, 6vw, 45px); }
 .tab-content.active { display: block; }
 
 .input-group {
     display: grid;
-    grid-template-columns: 150px 120px 1fr auto;
-    gap: 15px; margin-bottom: 25px;
+    grid-template-columns: clamp(120px, 25vw, 160px) clamp(100px, 22vw, 140px) 1fr clamp(80px, 18vw, 110px);
+    gap: clamp(12px, 3vw, 18px); 
+    margin-bottom: clamp(20px, 5vw, 30px);
 }
 
 select, input[type="number"], input[type="text"] {
-    padding: 18px; border: 2px solid #e9ecef; border-radius: 12px;
-    font-size: 16px; transition: all 0.3s;
+    padding: clamp(14px, 4vw, 20px); 
+    border: 2px solid #e9ecef; 
+    border-radius: 16px;
+    font-size: clamp(16px, 4vw, 18px); 
+    transition: all 0.3s;
+    background: white;
 }
 
 select:focus, input:focus {
-    outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    outline: none; 
+    border-color: #667eea; 
+    box-shadow: 0 0 0 4px rgba(102,126,234,0.15);
 }
 
 #add-expense {
-    padding: 18px 30px; background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white; border: none; border-radius: 12px; font-weight: bold;
-    cursor: pointer; transition: all 0.3s;
+    padding: clamp(16px, 4vw, 22px) clamp(24px, 6vw, 36px); 
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white; 
+    border: none; 
+    border-radius: 16px; 
+    font-weight: 700;
+    font-size: clamp(15px, 4vw, 17px);
+    cursor: pointer; 
+    transition: all 0.3s;
+    touch-action: manipulation;
+    white-space: nowrap;
 }
 
-#add-expense:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102,126,234,0.4); }
+#add-expense:active {
+    transform: scale(0.98);
+}
 
-.quick-add { display: flex; gap: 15px; flex-wrap: wrap; }
+#add-expense:hover:not(:active) { 
+    transform: translateY(-2px); 
+    box-shadow: 0 15px 35px rgba(102,126,234,0.45); 
+}
+
+.quick-add { 
+    display: flex; 
+    gap: clamp(10px, 2.5vw, 18px); 
+    flex-wrap: wrap; 
+    justify-content: center;
+}
 .quick-btn {
-    padding: 12px 20px; background: #f8f9fa; border: 2px solid #e9ecef;
-    border-radius: 25px; cursor: pointer; transition: all 0.3s; font-size: 14px;
+    padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 28px); 
+    background: #f8f9fa; 
+    border: 2px solid #e9ecef;
+    border-radius: 25px; 
+    cursor: pointer; 
+    transition: all 0.3s;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 600;
+    touch-action: manipulation;
+    white-space: nowrap;
 }
-.quick-btn:hover { background: #667eea; color: white; border-color: #667eea; }
+.quick-btn:active {
+    transform: scale(0.95);
+}
+.quick-btn:hover:not(:active) { 
+    background: #667eea; 
+    color: white; 
+    border-color: #667eea; 
+}
 
 .chart-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 20px; padding: 20px; background: #f8f9fa;
-    border-radius: 12px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: clamp(20px, 5vw, 30px); 
+    padding: clamp(16px, 4vw, 24px); 
+    background: #f8f9fa;
+    border-radius: 16px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.month-selector, .period-selector {
-    display: flex; align-items: center; gap: 10px;
-}
-
-#custom-month-day {
-    width: 60px; padding: 10px; text-align: center;
+.period-selector {
+    display: flex; 
+    gap: clamp(8px, 2vw, 12px);
 }
 
 .period-btn {
-    padding: 10px 20px; background: white; border: 2px solid #e9ecef;
-    border-radius: 25px; cursor: pointer; transition: all 0.3s;
+    padding: clamp(10px, 3vw, 14px) clamp(18px, 4vw, 24px); 
+    background: white; 
+    border: 2px solid #e9ecef;
+    border-radius: 25px; 
+    cursor: pointer; 
+    transition: all 0.3s;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 600;
 }
 .period-btn.active {
-    background: #667eea; color: white; border-color: #667eea;
+    background: #667eea; 
+    color: white; 
+    border-color: #667eea;
 }
 
 .chart-container {
     background: white;
-    border-radius: 15px;
-    padding: 30px;
+    border-radius: 20px;
+    padding: clamp(20px, 6vw, 35px);
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
 }
 
 #expense-chart {
-    max-height: 450px;
+    max-height: clamp(300px, 45vw, 500px);
     width: 100% !important;
     height: auto !important;
 }
 
 .empty-state {
     text-align: center;
-    padding: 60px;
+    padding: clamp(40px, 12vw, 80px) 0;
     color: #666;
 }
 
+.empty-state i {
+    font-size: clamp(40px, 15vw, 56px);
+    margin-bottom: clamp(15px, 4vw, 25px);
+    opacity: 0.5;
+    display: block;
+}
+
 .expense-item {
-    display: flex; align-items: center; padding: 20px; margin-bottom: 15px;
-    background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    display: flex; 
+    align-items: center; 
+    padding: clamp(16px, 4vw, 24px); 
+    margin-bottom: clamp(12px, 3vw, 20px);
+    background: white; 
+    border-radius: 20px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     transition: all 0.3s;
+    gap: clamp(15px, 4vw, 25px);
 }
 
-.expense-item:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+.expense-item:active {
+    transform: scale(0.98);
+}
 
-.category-icon { font-size: 24px; margin-right: 20px; width: 50px; text-align: center; }
+.expense-item:hover:not(:active) { 
+    transform: translateY(-2px); 
+    box-shadow: 0 20px 45px rgba(0,0,0,0.18); 
+}
 
-.expense-info { flex: 1; }
-.expense-info h4 { margin-bottom: 5px; color: #333; }
+.category-icon { 
+    font-size: clamp(22px, 7vw, 28px); 
+    width: clamp(50px, 12vw, 65px); 
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.expense-info { 
+    flex: 1; 
+    min-width: 0;
+}
+.expense-info h4 { 
+    margin-bottom: clamp(4px, 1vw, 8px); 
+    color: #333; 
+    font-size: clamp(15px, 4vw, 18px);
+    font-weight: 600;
+}
+.expense-info p {
+    font-size: clamp(13px, 3.5vw, 15px);
+    color: #666;
+    margin-bottom: 4px;
+}
 .expense-amount { 
-    font-size: 24px; font-weight: bold; color: #e74c3c; 
-    min-width: 120px; text-align: right;
+    font-size: clamp(20px, 6vw, 26px); 
+    font-weight: 800; 
+    color: #e74c3c; 
+    min-width: clamp(90px, 20vw, 130px); 
+    text-align: right;
 }
-.expense-date { color: #7f8c8d; font-size: 14px; margin-top: 5px; }
+.expense-date { 
+    color: #7f8c8d; 
+    font-size: clamp(12px, 3vw, 14px); 
+}
 
 .delete-btn {
-    background: #e74c3c; color: white; border: none; 
-    width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    background: #e74c3c; 
+    color: white; 
+    border: none; 
+    width: clamp(44px, 12vw, 52px); 
+    height: clamp(44px, 12vw, 52px); 
+    border-radius: 50%; 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    touch-action: manipulation;
+}
+
+.delete-btn:active {
+    transform: scale(0.9);
+    background: #c82333;
 }
 
 .budget-section { text-align: center; }
-.budget-input { margin-bottom: 40px; }
-.budget-input label { display: block; margin-bottom: 15px; font-size: 18px; }
+.budget-input { margin-bottom: clamp(30px, 8vw, 50px); }
+.budget-input label { 
+    display: block; 
+    margin-bottom: clamp(15px, 4vw, 25px); 
+    font-size: clamp(16px, 4.5vw, 20px); 
+}
 #monthly-budget { 
-    padding: 15px; font-size: 24px; border: 2px solid #e9ecef; 
-    border-radius: 12px; width: 200px; 
+    padding: clamp(16px, 5vw, 22px); 
+    font-size: clamp(22px, 6vw, 28px); 
+    border: 2px solid #e9ecef; 
+    border-radius: 16px; 
+    width: clamp(180px, 45vw, 260px); 
+    text-align: center;
 }
 #save-budget {
-    padding: 15px 30px; background: #27ae60; color: white;
-    border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
+    padding: clamp(14px, 4vw, 20px) clamp(24px, 6vw, 36px); 
+    background: #27ae60; 
+    color: white;
+    border: none; 
+    border-radius: 16px; 
+    font-weight: 700; 
+    cursor: pointer;
+    font-size: clamp(15px, 4vw, 18px);
 }
 
 .progress-circle {
-    position: relative; width: 200px; height: 200px; margin: 0 auto;
+    position: relative; 
+    width: clamp(160px, 40vw, 240px); 
+    height: clamp(160px, 40vw, 240px); 
+    margin: 0 auto;
 }
-.progress-circle svg { width: 200px; height: 200px; transform: rotate(-90deg); }
-.progress-bg { fill: none; stroke: #e9ecef; stroke-width: 10; }
+.progress-circle svg { 
+    width: 100%; 
+    height: 100%; 
+    transform: rotate(-90deg); 
+}
+.progress-bg { 
+    fill: none; 
+    stroke: #e9ecef; 
+    stroke-width: clamp(8px, 2.5vw, 12px); 
+}
 .progress-fill { 
-    fill: none; stroke: #667eea; stroke-width: 10; stroke-linecap: round;
-    stroke-dasharray: 502; stroke-dashoffset: 502; transition: stroke-dashoffset 1s;
+    fill: none; 
+    stroke: linear-gradient(135deg, #667eea, #764ba2); 
+    stroke-width: clamp(8px, 2.5vw, 12px); 
+    stroke-linecap: round;
+    stroke-dasharray: 502; 
+    stroke-dashoffset: 502; 
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .progress-text {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    font-size: 28px; font-weight: bold; color: #333;
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    font-size: clamp(24px, 7vw, 36px); 
+    font-weight: 800; 
+    color: #333;
 }
 
+.mobile-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 28px;
+    padding: 12px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    display: flex;
+    gap: 12px;
+    z-index: 1000;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.nav-btn {
+    width: 60px;
+    height: 60px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    color: #667eea;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    position: relative;
+}
+
+.nav-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+}
+
+/* 響應式 */
 @media (max-width: 768px) {
-    .input-group { grid-template-columns: 1fr; }
-    .tabs { flex-direction: column; }
-    .stats { flex-direction: column; gap: 10px; }
-    .chart-header { flex-direction: column; gap: 15px; text-align: center; }
+    .desktop-tabs { display: none; }
+    .mobile-nav { display: flex; }
+    
+    .stats { 
+        flex-direction: column; 
+        gap: clamp(10px, 3vw, 18px);
+        align-items: center;
+    }
+    
+    .input-group { 
+        grid-template-columns: 1fr; 
+        gap: clamp(14px, 4vw, 20px);
+    }
+    
+    .chart-header { 
+        flex-direction: column; 
+        gap: clamp(18px, 5vw, 25px);
+        text-align: center;
+    }
+    
+    .expense-item {
+        flex-direction: column;
+        text-align: center;
+        gap: clamp(15px, 4vw, 25px);
+    }
+    
+    .expense-amount {
+        order: -1;
+        font-size: clamp(24px, 8vw, 32px);
+    }
+    
+    .delete-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    body { padding: clamp(8px, 3vw, 15px); }
+    
+    .input-section, .tab-content {
+        padding: clamp(20px, 5vw, 30px);
+    }
 }

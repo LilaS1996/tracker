@@ -1,401 +1,453 @@
-class ExpenseTracker {
-    constructor() {
-        this.expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-        this.budget = parseFloat(localStorage.getItem('monthlyBudget')) || 30000;
-        this.monthDay = parseInt(localStorage.getItem('monthDay')) || 25;
-        this.currentPeriod = 'current';
-        this.chartCanvas = null;
-        this.init();
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: clamp(10px, 4vw, 20px);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 28px;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.3);
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+
+header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: clamp(20px, 6vw, 30px) clamp(20px, 5vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 3vw, 20px);
+    text-align: center;
+}
+
+header h1 { 
+    font-size: clamp(24px, 8vw, 36px); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    gap: clamp(10px, 3vw, 18px); 
+    font-weight: 700;
+}
+
+.stats { 
+    display: flex; 
+    justify-content: center;
+    gap: clamp(20px, 6vw, 40px); 
+    font-size: clamp(14px, 4vw, 18px); 
+    font-weight: 600;
+}
+
+.desktop-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tab-btn {
+    flex: 1; 
+    padding: clamp(16px, 4vw, 22px); 
+    background: none; 
+    border: none; 
+    color: #6c757d; 
+    font-size: clamp(14px, 3.5vw, 16px); 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: clamp(8px, 2vw, 12px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    white-space: nowrap;
+    touch-action: manipulation;
+}
+
+.tab-btn.active { 
+    background: white; 
+    color: #667eea; 
+    font-weight: 700;
+    position: relative;
+}
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.tab-content { display: none; padding: clamp(25px, 6vw, 45px); }
+.tab-content.active { display: block; }
+
+.input-group {
+    display: grid;
+    grid-template-columns: clamp(120px, 25vw, 160px) clamp(100px, 22vw, 140px) 1fr clamp(80px, 18vw, 110px);
+    gap: clamp(12px, 3vw, 18px); 
+    margin-bottom: clamp(20px, 5vw, 30px);
+}
+
+select, input[type="number"], input[type="text"] {
+    padding: clamp(14px, 4vw, 20px); 
+    border: 2px solid #e9ecef; 
+    border-radius: 16px;
+    font-size: clamp(16px, 4vw, 18px); 
+    transition: all 0.3s;
+    background: white;
+}
+
+select:focus, input:focus {
+    outline: none; 
+    border-color: #667eea; 
+    box-shadow: 0 0 0 4px rgba(102,126,234,0.15);
+}
+
+#add-expense {
+    padding: clamp(16px, 4vw, 22px) clamp(24px, 6vw, 36px); 
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white; 
+    border: none; 
+    border-radius: 16px; 
+    font-weight: 700;
+    font-size: clamp(15px, 4vw, 17px);
+    cursor: pointer; 
+    transition: all 0.3s;
+    touch-action: manipulation;
+    white-space: nowrap;
+}
+
+#add-expense:active {
+    transform: scale(0.98);
+}
+
+#add-expense:hover:not(:active) { 
+    transform: translateY(-2px); 
+    box-shadow: 0 15px 35px rgba(102,126,234,0.45); 
+}
+
+.quick-add { 
+    display: flex; 
+    gap: clamp(10px, 2.5vw, 18px); 
+    flex-wrap: wrap; 
+    justify-content: center;
+}
+.quick-btn {
+    padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 28px); 
+    background: #f8f9fa; 
+    border: 2px solid #e9ecef;
+    border-radius: 25px; 
+    cursor: pointer; 
+    transition: all 0.3s;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 600;
+    touch-action: manipulation;
+    white-space: nowrap;
+}
+.quick-btn:active {
+    transform: scale(0.95);
+}
+.quick-btn:hover:not(:active) { 
+    background: #667eea; 
+    color: white; 
+    border-color: #667eea; 
+}
+
+.chart-header {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: clamp(20px, 5vw, 30px); 
+    padding: clamp(16px, 4vw, 24px); 
+    background: #f8f9fa;
+    border-radius: 16px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.period-selector {
+    display: flex; 
+    gap: clamp(8px, 2vw, 12px);
+}
+
+.period-btn {
+    padding: clamp(10px, 3vw, 14px) clamp(18px, 4vw, 24px); 
+    background: white; 
+    border: 2px solid #e9ecef;
+    border-radius: 25px; 
+    cursor: pointer; 
+    transition: all 0.3s;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 600;
+}
+.period-btn.active {
+    background: #667eea; 
+    color: white; 
+    border-color: #667eea;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 20px;
+    padding: clamp(20px, 6vw, 35px);
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+#expense-chart {
+    max-height: clamp(300px, 45vw, 500px);
+    width: 100% !important;
+    height: auto !important;
+}
+
+.empty-state {
+    text-align: center;
+    padding: clamp(40px, 12vw, 80px) 0;
+    color: #666;
+}
+
+.empty-state i {
+    font-size: clamp(40px, 15vw, 56px);
+    margin-bottom: clamp(15px, 4vw, 25px);
+    opacity: 0.5;
+    display: block;
+}
+
+.expense-item {
+    display: flex; 
+    align-items: center; 
+    padding: clamp(16px, 4vw, 24px); 
+    margin-bottom: clamp(12px, 3vw, 20px);
+    background: white; 
+    border-radius: 20px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    gap: clamp(15px, 4vw, 25px);
+}
+
+.expense-item:active {
+    transform: scale(0.98);
+}
+
+.expense-item:hover:not(:active) { 
+    transform: translateY(-2px); 
+    box-shadow: 0 20px 45px rgba(0,0,0,0.18); 
+}
+
+.category-icon { 
+    font-size: clamp(22px, 7vw, 28px); 
+    width: clamp(50px, 12vw, 65px); 
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.expense-info { 
+    flex: 1; 
+    min-width: 0;
+}
+.expense-info h4 { 
+    margin-bottom: clamp(4px, 1vw, 8px); 
+    color: #333; 
+    font-size: clamp(15px, 4vw, 18px);
+    font-weight: 600;
+}
+.expense-info p {
+    font-size: clamp(13px, 3.5vw, 15px);
+    color: #666;
+    margin-bottom: 4px;
+}
+.expense-amount { 
+    font-size: clamp(20px, 6vw, 26px); 
+    font-weight: 800; 
+    color: #e74c3c; 
+    min-width: clamp(90px, 20vw, 130px); 
+    text-align: right;
+}
+.expense-date { 
+    color: #7f8c8d; 
+    font-size: clamp(12px, 3vw, 14px); 
+}
+
+.delete-btn {
+    background: #e74c3c; 
+    color: white; 
+    border: none; 
+    width: clamp(44px, 12vw, 52px); 
+    height: clamp(44px, 12vw, 52px); 
+    border-radius: 50%; 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    touch-action: manipulation;
+}
+
+.delete-btn:active {
+    transform: scale(0.9);
+    background: #c82333;
+}
+
+.budget-section { text-align: center; }
+.budget-input { margin-bottom: clamp(30px, 8vw, 50px); }
+.budget-input label { 
+    display: block; 
+    margin-bottom: clamp(15px, 4vw, 25px); 
+    font-size: clamp(16px, 4.5vw, 20px); 
+}
+#monthly-budget { 
+    padding: clamp(16px, 5vw, 22px); 
+    font-size: clamp(22px, 6vw, 28px); 
+    border: 2px solid #e9ecef; 
+    border-radius: 16px; 
+    width: clamp(180px, 45vw, 260px); 
+    text-align: center;
+}
+#save-budget {
+    padding: clamp(14px, 4vw, 20px) clamp(24px, 6vw, 36px); 
+    background: #27ae60; 
+    color: white;
+    border: none; 
+    border-radius: 16px; 
+    font-weight: 700; 
+    cursor: pointer;
+    font-size: clamp(15px, 4vw, 18px);
+}
+
+.progress-circle {
+    position: relative; 
+    width: clamp(160px, 40vw, 240px); 
+    height: clamp(160px, 40vw, 240px); 
+    margin: 0 auto;
+}
+.progress-circle svg { 
+    width: 100%; 
+    height: 100%; 
+    transform: rotate(-90deg); 
+}
+.progress-bg { 
+    fill: none; 
+    stroke: #e9ecef; 
+    stroke-width: clamp(8px, 2.5vw, 12px); 
+}
+.progress-fill { 
+    fill: none; 
+    stroke: linear-gradient(135deg, #667eea, #764ba2); 
+    stroke-width: clamp(8px, 2.5vw, 12px); 
+    stroke-linecap: round;
+    stroke-dasharray: 502; 
+    stroke-dashoffset: 502; 
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.progress-text {
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    font-size: clamp(24px, 7vw, 36px); 
+    font-weight: 800; 
+    color: #333;
+}
+
+.mobile-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 28px;
+    padding: 12px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    display: flex;
+    gap: 12px;
+    z-index: 1000;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.nav-btn {
+    width: 60px;
+    height: 60px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    color: #667eea;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    position: relative;
+}
+
+.nav-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+}
+
+/* 響應式 */
+@media (max-width: 768px) {
+    .desktop-tabs { display: none; }
+    .mobile-nav { display: flex; }
+    
+    .stats { 
+        flex-direction: column; 
+        gap: clamp(10px, 3vw, 18px);
+        align-items: center;
     }
-
-    init() {
-        this.bindElements();
-        this.bindEvents();
-        this.updateMonthSelector();
-        this.switchTab('add');
-        this.renderList();
-        this.updateStats();
-        this.updateBudgetDisplay();
-        document.getElementById('custom-month-day').value = this.monthDay;
-        this.chartCanvas = document.getElementById('expense-chart');
+    
+    .input-group { 
+        grid-template-columns: 1fr; 
+        gap: clamp(14px, 4vw, 20px);
     }
-
-    bindElements() {
-        this.categoryEl = document.getElementById('category');
-        this.amountEl = document.getElementById('amount');
-        this.noteEl = document.getElementById('note');
-        this.expenseList = document.getElementById('expense-list');
-        this.monthTotalEl = document.getElementById('month-total');
-        this.budgetLeftEl = document.getElementById('budget-left');
-        this.monthlyBudgetEl = document.getElementById('monthly-budget');
-        this.budgetPercentEl = document.getElementById('budget-percent');
+    
+    .chart-header { 
+        flex-direction: column; 
+        gap: clamp(18px, 5vw, 25px);
+        text-align: center;
     }
-
-    bindEvents() {
-        // 修復：使用箭頭函數確保 this 指向正確
-        document.getElementById('add-expense').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.addExpense();
-        });
-        
-        document.querySelectorAll('.quick-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.amountEl.value = btn.dataset.amount;
-                this.categoryEl.value = '飲食';
-                this.addExpense();
-            });
-        });
-
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
-        });
-
-        document.getElementById('save-budget').addEventListener('click', () => {
-            this.saveBudget();
-        });
-        
-        document.getElementById('save-month-day').addEventListener('click', () => {
-            this.saveMonthDay();
-        });
-        
-        document.querySelectorAll('.period-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.setPeriod(btn.dataset.period));
-        });
+    
+    .expense-item {
+        flex-direction: column;
+        text-align: center;
+        gap: clamp(15px, 4vw, 25px);
     }
-
-    // 新增驗證函數
-    validateInput() {
-        const amount = parseFloat(this.amountEl.value);
-        if (!amount || amount <= 0 || isNaN(amount)) {
-            alert('請輸入有效金額（大於0的數字）！');
-            this.amountEl.focus();
-            return false;
-        }
-        return true;
+    
+    .expense-amount {
+        order: -1;
+        font-size: clamp(24px, 8vw, 32px);
     }
-
-    addExpense() {
-        if (!this.validateInput()) return;
-
-        const category = this.categoryEl.value;
-        const amount = parseFloat(this.amountEl.value);
-        const note = this.noteEl.value.trim();
-
-        const expense = {
-            id: Date.now(),
-            category,
-            amount,
-            note,
-            date: new Date().toISOString()
-        };
-
-        this.expenses.unshift(expense);
-        this.saveData();
-        
-        // 清空表單
-        this.amountEl.value = '';
-        this.noteEl.value = '';
-        this.categoryEl.value = '飲食'; // 重置為預設值
-        
-        this.renderList();
-        this.updateStats();
-        this.updateBudgetDisplay();
-        this.updateChart();
-
-        this.showToast('✅ 新增成功！');
-    }
-
-    // 修復 deleteExpense 使其可以被全域調用
-    deleteExpense(id) {
-        if (confirm('確定刪除這筆支出？')) {
-            this.expenses = this.expenses.filter(e => e.id !== id);
-            this.saveData();
-            this.renderList();
-            this.updateStats();
-            this.updateBudgetDisplay();
-            this.updateChart();
-            this.showToast('🗑️ 刪除成功！');
-        }
-    }
-
-    // 其他方法保持不變...
-    saveMonthDay() {
-        const day = parseInt(document.getElementById('custom-month-day').value);
-        if (day >= 1 && day <= 31) {
-            this.monthDay = day;
-            localStorage.setItem('monthDay', this.monthDay);
-            this.updateMonthSelector();
-            this.updateAll();
-            this.showToast('✅ 換月日儲存成功！');
-        } else {
-            alert('請輸入1-31日的有效日期');
-        }
-    }
-
-    setPeriod(period) {
-        this.currentPeriod = period;
-        document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`[data-period="${period}"]`).classList.add('active');
-        this.updateAll();
-    }
-
-    updateMonthSelector() {
-        const select = document.getElementById('month-select');
-        select.innerHTML = '<option value="current">當前期間</option>';
-        
-        const now = new Date();
-        for (let i = 11; i >= 0; i--) {
-            const date = new Date(now.getFullYear(), now.getMonth() - i, this.monthDay);
-            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-            const periodStr = `${date.getFullYear()}年${monthNames[date.getMonth()]} (${this.monthDay}日結算)`;
-            const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-            select.innerHTML += `<option value="${value}">${periodStr}</option>`;
-        }
-    }
-
-    getCurrentPeriodExpenses() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        
-        if (this.currentPeriod === 'previous') {
-            return this.getPeriodExpenses(year, month - 1);
-        }
-        
-        return this.getPeriodExpenses(year, month);
-    }
-
-    getPeriodExpenses(year, month) {
-        return this.expenses.filter(expense => {
-            const expenseDate = new Date(expense.date);
-            const periodStart = new Date(year, month, this.monthDay);
-            const periodEnd = new Date(year, month + 1, this.monthDay);
-            periodEnd.setHours(23, 59, 59, 999);
-            
-            return expenseDate >= periodStart && expenseDate < periodEnd;
-        });
-    }
-
-    renderList() {
-        const list = this.expenseList;
-        const periodExpenses = this.getCurrentPeriodExpenses();
-        
-        if (periodExpenses.length === 0) {
-            list.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-wallet" style="font-size:48px;margin-bottom:15px;opacity:0.5;"></i>
-                    <p>本期還沒有支出記錄<br>點上方快速按鈕新增試試！</p>
-                </div>
-            `;
-            return;
-        }
-
-        list.innerHTML = periodExpenses.slice(0, 20).map(expense => {
-            const date = new Date(expense.date).toLocaleDateString('zh-TW');
-            const icon = this.getCategoryIcon(expense.category);
-            return `
-                <div class="expense-item">
-                    <div class="category-icon">${icon}</div>
-                    <div class="expense-info">
-                        <h4>${expense.category}</h4>
-                        ${expense.note ? `<p>${expense.note}</p>` : ''}
-                        <div class="expense-date">${date}</div>
-                    </div>
-                    <div class="expense-amount">-${expense.amount.toLocaleString()}</div>
-                    <button class="delete-btn" onclick="tracker.deleteExpense(${expense.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-        }).join('');
-    }
-
-    getCategoryIcon(category) {
-        const icons = {
-            '飲食': '🍽️', '交通': '🚗', '購物': '🛒', 
-            '娛樂': '🎮', '生活': '🏠', '投資': '📈'
-        };
-        return icons[category] || '💰';
-    }
-
-    updateStats() {
-        const periodExpenses = this.getCurrentPeriodExpenses();
-        const total = periodExpenses.reduce((sum, e) => sum + e.amount, 0);
-        this.monthTotalEl.textContent = total.toLocaleString();
-    }
-
-    updateBudgetDisplay() {
-        this.monthlyBudgetEl.value = this.budget;
-        const periodExpenses = this.getCurrentPeriodExpenses();
-        const spent = periodExpenses.reduce((sum, e) => sum + e.amount, 0);
-        const remaining = this.budget - spent;
-        
-        this.budgetLeftEl.textContent = remaining.toLocaleString();
-        
-        const percentage = this.budget > 0 ? Math.min((spent / this.budget) * 100, 100) : 0;
-        this.budgetPercentEl.textContent = percentage.toFixed(0) + '%';
-        
-        const progressFill = document.querySelector('.progress-fill');
-        if (progressFill) {
-            const circumference = 502;
-            const offset = circumference * (1 - percentage / 100);
-            progressFill.style.strokeDashoffset = offset;
-        }
-    }
-
-    saveBudget() {
-        this.budget = parseFloat(this.monthlyBudgetEl.value) || 0;
-        localStorage.setItem('monthlyBudget', this.budget);
-        this.updateBudgetDisplay();
-        this.showToast('💰 預算儲存成功！');
-    }
-
-    updateChart() {
-        if (!this.chartCanvas) return;
-        const canvas = this.chartCanvas;
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = 600;
-        canvas.height = 450;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        const periodExpenses = this.getCurrentPeriodExpenses();
-        if (periodExpenses.length === 0) {
-            ctx.save();
-            ctx.fillStyle = '#999';
-            ctx.font = 'bold 28px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('📊 圓餅圖 - 無資料', canvas.width/2, canvas.height/2);
-            ctx.restore();
-            return;
-        }
-
-        const categoryTotals = {};
-        let totalAmount = 0;
-        periodExpenses.forEach(expense => {
-            categoryTotals[expense.category] = (categoryTotals[expense.category] || 0) + expense.amount;
-            totalAmount += expense.amount;
-        });
-
-        const categories = Object.keys(categoryTotals);
-        const amounts = Object.values(categoryTotals);
-        
-        const centerX = 220;
-        const centerY = 225;
-        const radius = 130;
-        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#F7DC6F', '#96CEB4'];
-
-        let startAngle = 0;
-        categories.forEach((category, index) => {
-            const amount = amounts[index];
-            const percentage = (amount / totalAmount) * 100;
-            const sliceAngle = (percentage / 100) * 2 * Math.PI;
-            const endAngle = startAngle + sliceAngle;
-
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.closePath();
-            ctx.fillStyle = colors[index % colors.length];
-            ctx.shadowColor = 'rgba(0,0,0,0.3)';
-            ctx.shadowBlur = 8;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-            ctx.stroke();
-
-            startAngle = endAngle;
-        });
-
-        const legendStartX = 380;
-        let legendY = 100;
-        categories.forEach((category, index) => {
-            const amount = amounts[index];
-            const percentage = ((amount / totalAmount) * 100).toFixed(1);
-            
-            ctx.fillStyle = colors[index % colors.length];
-            ctx.fillRect(legendStartX, legendY, 20, 20);
-            
-            ctx.fillStyle = '#333';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(category.slice(0,2), legendStartX + 28, legendY + 10);
-            
-            ctx.font = 'bold 18px Arial';
-            ctx.fillStyle = '#e74c3c';
-            ctx.fillText(`${amount.toLocaleString()}`, legendStartX + 100, legendY + 8);
-            
-            ctx.font = '16px Arial';
-            ctx.fillStyle = '#666';
-            ctx.fillText(`(${percentage}%)`, legendStartX + 160, legendY + 12);
-            
-            legendY += 45;
-        });
-
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = 'bold 32px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText('📊 本期支出分析', canvas.width/2, 20);
-
-        ctx.font = 'bold 28px Arial';
-        ctx.fillStyle = '#e74c3c';
-        ctx.fillText(`總計 ${totalAmount.toLocaleString()} 元`, canvas.width/2, 65);
-    }
-
-    updateAll() {
-        this.renderList();
-        this.updateStats();
-        this.updateBudgetDisplay();
-        this.updateChart();
-    }
-
-    switchTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        
-        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-        document.getElementById(tab).classList.add('active');
-        
-        if (tab === 'list') this.renderList();
-        if (tab === 'chart') this.updateChart();
-        if (tab === 'budget') this.updateBudgetDisplay();
-    }
-
-    saveData() {
-        localStorage.setItem('expenses', JSON.stringify(this.expenses));
-    }
-
-    showToast(message) {
-        const toast = document.createElement('div');
-        toast.textContent = message;
-        Object.assign(toast.style, {
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            background: '#27ae60',
-            color: 'white',
-            padding: '15px 25px',
-            borderRadius: '10px',
-            zIndex: '10000',
-            fontWeight: 'bold',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-        });
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2500);
+    
+    .delete-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        align-self: flex-start;
     }
 }
 
-// 修復：確保全域變數 tracker 正確初始化
-let tracker;
-
-window.addEventListener('DOMContentLoaded', () => {
-    tracker = new ExpenseTracker();
-});
-
-// 為了 deleteExpense 的全域調用，確保 tracker 已準備好
-window.tracker = tracker;
+@media (max-width: 480px) {
+    body { padding: clamp(8px, 3vw, 15px); }
+    
+    .input-section, .tab-content {
+        padding: clamp(20px, 5vw, 30px);
+    }
+}

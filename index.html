@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>💰 支出追蹤 Pro</title>
     <link rel="stylesheet" href="expense.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -17,7 +17,8 @@
             </div>
         </header>
 
-        <div class="tabs">
+        <!-- 頂部Tab導航（桌面）-->
+        <div class="tabs desktop-tabs">
             <button class="tab-btn active" data-tab="add"><i class="fas fa-plus"></i> 新增支出</button>
             <button class="tab-btn" data-tab="list"><i class="fas fa-list"></i> 支出清單</button>
             <button class="tab-btn" data-tab="chart"><i class="fas fa-chart-pie"></i> 圓餅圖表</button>
@@ -36,9 +37,9 @@
                         <option value="生活">🏠 生活</option>
                         <option value="投資">📈 投資</option>
                     </select>
-                    <input type="number" id="amount" placeholder="金額" min="0">
+                    <input type="number" id="amount" placeholder="金額" min="0" inputmode="numeric">
                     <input type="text" id="note" placeholder="備註（選填）">
-                    <button id="add-expense"><i class="fas fa-plus"></i> 新增</button>
+                    <button id="add-expense" aria-label="新增支出"><i class="fas fa-plus"></i> 新增</button>
                 </div>
                 <div class="quick-add">
                     <button class="quick-btn" data-amount="50">咖啡 ☕ 50</button>
@@ -53,7 +54,7 @@
         <div id="list" class="tab-content">
             <div id="expense-list">
                 <div class="empty-state">
-                    <i class="fas fa-wallet" style="font-size:48px;margin-bottom:15px;opacity:0.5;"></i>
+                    <i class="fas fa-wallet"></i>
                     <p>還沒有支出記錄<br>點上方快速按鈕新增試試！</p>
                 </div>
             </div>
@@ -62,21 +63,13 @@
         <!-- 圓餅圖表 -->
         <div id="chart" class="tab-content">
             <div class="chart-header">
-                <div class="month-selector">
-                    <label>換月日: </label>
-                    <input type="number" id="custom-month-day" value="25" min="1" max="31" maxlength="2">
-                    <button id="save-month-day">儲存</button>
-                </div>
                 <div class="period-selector">
                     <button class="period-btn active" data-period="current">本期</button>
                     <button class="period-btn" data-period="previous">上期</button>
-                    <select id="month-select">
-                        <option value="current">當前期間</option>
-                    </select>
                 </div>
             </div>
             <div class="chart-container">
-                <canvas id="expense-chart" width="600" height="450"></canvas>
+                <canvas id="expense-chart"></canvas>
             </div>
         </div>
 
@@ -85,7 +78,7 @@
             <div class="budget-section">
                 <div class="budget-input">
                     <label>本期預算: 
-                        <input type="number" id="monthly-budget" value="30000" min="0">
+                        <input type="number" id="monthly-budget" value="30000" min="0" inputmode="numeric">
                     </label>
                     <button id="save-budget">儲存預算</button>
                 </div>
@@ -103,6 +96,23 @@
             </div>
         </div>
     </div>
+
+    <!-- 手機底部導航 -->
+    <div class="mobile-nav">
+        <button class="nav-btn active" data-tab="add" title="新增支出">
+            <i class="fas fa-plus"></i>
+        </button>
+        <button class="nav-btn" data-tab="list" title="支出清單">
+            <i class="fas fa-list"></i>
+        </button>
+        <button class="nav-btn" data-tab="chart" title="圖表分析">
+            <i class="fas fa-chart-pie"></i>
+        </button>
+        <button class="nav-btn" data-tab="budget" title="預算設定">
+            <i class="fas fa-coins"></i>
+        </button>
+    </div>
+
     <script src="expense.js"></script>
 </body>
 </html>
