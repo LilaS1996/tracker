@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 支出追蹤 Pro</title>
+    <link rel="stylesheet" href="expense.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1><i class="fas fa-wallet"></i> 支出追蹤 Pro</h1>
+            <div class="stats">
+                <span>本期支出: <span id="month-total">0</span> 元</span>
+                <span>剩餘預算: <span id="budget-left">30,000</span> 元</span>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="add"><i class="fas fa-plus"></i> 新增支出</button>
+            <button class="tab-btn" data-tab="list"><i class="fas fa-list"></i> 支出清單</button>
+            <button class="tab-btn" data-tab="chart"><i class="fas fa-chart-pie"></i> 圓餅圖表</button>
+            <button class="tab-btn" data-tab="budget"><i class="fas fa-coins"></i> 預算設定</button>
+        </div>
+
+        <!-- 新增支出 -->
+        <div id="add" class="tab-content active">
+            <div class="input-section">
+                <div class="input-group">
+                    <select id="category">
+                        <option value="飲食">🍽️ 飲食</option>
+                        <option value="交通">🚗 交通</option>
+                        <option value="購物">🛒 購物</option>
+                        <option value="娛樂">🎮 娛樂</option>
+                        <option value="生活">🏠 生活</option>
+                        <option value="投資">📈 投資</option>
+                    </select>
+                    <input type="number" id="amount" placeholder="金額" min="0">
+                    <input type="text" id="note" placeholder="備註（選填）">
+                    <button id="add-expense"><i class="fas fa-plus"></i> 新增</button>
+                </div>
+                <div class="quick-add">
+                    <button class="quick-btn" data-amount="50">咖啡 ☕ 50</button>
+                    <button class="quick-btn" data-amount="150">午餐 🍱 150</button>
+                    <button class="quick-btn" data-amount="300">晚餐 🍲 300</button>
+                    <button class="quick-btn" data-amount="100">交通 🚗 100</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 支出清單 -->
+        <div id="list" class="tab-content">
+            <div id="expense-list">
+                <div class="empty-state">
+                    <i class="fas fa-wallet" style="font-size:48px;margin-bottom:15px;opacity:0.5;"></i>
+                    <p>還沒有支出記錄<br>點上方快速按鈕新增試試！</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 圓餅圖表 -->
+        <div id="chart" class="tab-content">
+            <div class="chart-header">
+                <div class="month-selector">
+                    <label>換月日: </label>
+                    <input type="number" id="custom-month-day" value="25" min="1" max="31" maxlength="2">
+                    <button id="save-month-day">儲存</button>
+                </div>
+                <div class="period-selector">
+                    <button class="period-btn active" data-period="current">本期</button>
+                    <button class="period-btn" data-period="previous">上期</button>
+                    <select id="month-select">
+                        <option value="current">當前期間</option>
+                    </select>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="expense-chart" width="600" height="450"></canvas>
+            </div>
+        </div>
+
+        <!-- 預算設定 -->
+        <div id="budget" class="tab-content">
+            <div class="budget-section">
+                <div class="budget-input">
+                    <label>本期預算: 
+                        <input type="number" id="monthly-budget" value="30000" min="0">
+                    </label>
+                    <button id="save-budget">儲存預算</button>
+                </div>
+                <div class="budget-progress">
+                    <div class="progress-circle">
+                        <svg viewBox="0 0 180 180">
+                            <circle class="progress-bg" cx="90" cy="90" r="80"></circle>
+                            <circle class="progress-fill" cx="90" cy="90" r="80"></circle>
+                        </svg>
+                        <div class="progress-text">
+                            <span id="budget-percent">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="expense.js"></script>
+</body>
+</html>
