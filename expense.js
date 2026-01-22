@@ -1,453 +1,441 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    padding: clamp(10px, 4vw, 20px);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.app {
-    max-width: 1100px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 28px;
-    box-shadow: 0 30px 90px rgba(0,0,0,0.3);
-    overflow: hidden;
-    position: relative;
-    z-index: 2;
-}
-
-header {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    padding: clamp(20px, 6vw, 30px) clamp(20px, 5vw, 40px);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(12px, 3vw, 20px);
-    text-align: center;
-}
-
-header h1 { 
-    font-size: clamp(24px, 8vw, 36px); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    gap: clamp(10px, 3vw, 18px); 
-    font-weight: 700;
-}
-
-.stats { 
-    display: flex; 
-    justify-content: center;
-    gap: clamp(20px, 6vw, 40px); 
-    font-size: clamp(14px, 4vw, 18px); 
-    font-weight: 600;
-}
-
-.desktop-tabs {
-    display: flex;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.tab-btn {
-    flex: 1; 
-    padding: clamp(16px, 4vw, 22px); 
-    background: none; 
-    border: none; 
-    color: #6c757d; 
-    font-size: clamp(14px, 3.5vw, 16px); 
-    cursor: pointer;
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: clamp(8px, 2vw, 12px);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    white-space: nowrap;
-    touch-action: manipulation;
-}
-
-.tab-btn.active { 
-    background: white; 
-    color: #667eea; 
-    font-weight: 700;
-    position: relative;
-}
-.tab-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 3px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.tab-content { display: none; padding: clamp(25px, 6vw, 45px); }
-.tab-content.active { display: block; }
-
-.input-group {
-    display: grid;
-    grid-template-columns: clamp(120px, 25vw, 160px) clamp(100px, 22vw, 140px) 1fr clamp(80px, 18vw, 110px);
-    gap: clamp(12px, 3vw, 18px); 
-    margin-bottom: clamp(20px, 5vw, 30px);
-}
-
-select, input[type="number"], input[type="text"] {
-    padding: clamp(14px, 4vw, 20px); 
-    border: 2px solid #e9ecef; 
-    border-radius: 16px;
-    font-size: clamp(16px, 4vw, 18px); 
-    transition: all 0.3s;
-    background: white;
-}
-
-select:focus, input:focus {
-    outline: none; 
-    border-color: #667eea; 
-    box-shadow: 0 0 0 4px rgba(102,126,234,0.15);
-}
-
-#add-expense {
-    padding: clamp(16px, 4vw, 22px) clamp(24px, 6vw, 36px); 
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white; 
-    border: none; 
-    border-radius: 16px; 
-    font-weight: 700;
-    font-size: clamp(15px, 4vw, 17px);
-    cursor: pointer; 
-    transition: all 0.3s;
-    touch-action: manipulation;
-    white-space: nowrap;
-}
-
-#add-expense:active {
-    transform: scale(0.98);
-}
-
-#add-expense:hover:not(:active) { 
-    transform: translateY(-2px); 
-    box-shadow: 0 15px 35px rgba(102,126,234,0.45); 
-}
-
-.quick-add { 
-    display: flex; 
-    gap: clamp(10px, 2.5vw, 18px); 
-    flex-wrap: wrap; 
-    justify-content: center;
-}
-.quick-btn {
-    padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 28px); 
-    background: #f8f9fa; 
-    border: 2px solid #e9ecef;
-    border-radius: 25px; 
-    cursor: pointer; 
-    transition: all 0.3s;
-    font-size: clamp(13px, 3.5vw, 15px);
-    font-weight: 600;
-    touch-action: manipulation;
-    white-space: nowrap;
-}
-.quick-btn:active {
-    transform: scale(0.95);
-}
-.quick-btn:hover:not(:active) { 
-    background: #667eea; 
-    color: white; 
-    border-color: #667eea; 
-}
-
-.chart-header {
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    margin-bottom: clamp(20px, 5vw, 30px); 
-    padding: clamp(16px, 4vw, 24px); 
-    background: #f8f9fa;
-    border-radius: 16px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.period-selector {
-    display: flex; 
-    gap: clamp(8px, 2vw, 12px);
-}
-
-.period-btn {
-    padding: clamp(10px, 3vw, 14px) clamp(18px, 4vw, 24px); 
-    background: white; 
-    border: 2px solid #e9ecef;
-    border-radius: 25px; 
-    cursor: pointer; 
-    transition: all 0.3s;
-    font-size: clamp(13px, 3.5vw, 15px);
-    font-weight: 600;
-}
-.period-btn.active {
-    background: #667eea; 
-    color: white; 
-    border-color: #667eea;
-}
-
-.chart-container {
-    background: white;
-    border-radius: 20px;
-    padding: clamp(20px, 6vw, 35px);
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-}
-
-#expense-chart {
-    max-height: clamp(300px, 45vw, 500px);
-    width: 100% !important;
-    height: auto !important;
-}
-
-.empty-state {
-    text-align: center;
-    padding: clamp(40px, 12vw, 80px) 0;
-    color: #666;
-}
-
-.empty-state i {
-    font-size: clamp(40px, 15vw, 56px);
-    margin-bottom: clamp(15px, 4vw, 25px);
-    opacity: 0.5;
-    display: block;
-}
-
-.expense-item {
-    display: flex; 
-    align-items: center; 
-    padding: clamp(16px, 4vw, 24px); 
-    margin-bottom: clamp(12px, 3vw, 20px);
-    background: white; 
-    border-radius: 20px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    transition: all 0.3s;
-    gap: clamp(15px, 4vw, 25px);
-}
-
-.expense-item:active {
-    transform: scale(0.98);
-}
-
-.expense-item:hover:not(:active) { 
-    transform: translateY(-2px); 
-    box-shadow: 0 20px 45px rgba(0,0,0,0.18); 
-}
-
-.category-icon { 
-    font-size: clamp(22px, 7vw, 28px); 
-    width: clamp(50px, 12vw, 65px); 
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.expense-info { 
-    flex: 1; 
-    min-width: 0;
-}
-.expense-info h4 { 
-    margin-bottom: clamp(4px, 1vw, 8px); 
-    color: #333; 
-    font-size: clamp(15px, 4vw, 18px);
-    font-weight: 600;
-}
-.expense-info p {
-    font-size: clamp(13px, 3.5vw, 15px);
-    color: #666;
-    margin-bottom: 4px;
-}
-.expense-amount { 
-    font-size: clamp(20px, 6vw, 26px); 
-    font-weight: 800; 
-    color: #e74c3c; 
-    min-width: clamp(90px, 20vw, 130px); 
-    text-align: right;
-}
-.expense-date { 
-    color: #7f8c8d; 
-    font-size: clamp(12px, 3vw, 14px); 
-}
-
-.delete-btn {
-    background: #e74c3c; 
-    color: white; 
-    border: none; 
-    width: clamp(44px, 12vw, 52px); 
-    height: clamp(44px, 12vw, 52px); 
-    border-radius: 50%; 
-    cursor: pointer;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    transition: all 0.3s;
-    flex-shrink: 0;
-    touch-action: manipulation;
-}
-
-.delete-btn:active {
-    transform: scale(0.9);
-    background: #c82333;
-}
-
-.budget-section { text-align: center; }
-.budget-input { margin-bottom: clamp(30px, 8vw, 50px); }
-.budget-input label { 
-    display: block; 
-    margin-bottom: clamp(15px, 4vw, 25px); 
-    font-size: clamp(16px, 4.5vw, 20px); 
-}
-#monthly-budget { 
-    padding: clamp(16px, 5vw, 22px); 
-    font-size: clamp(22px, 6vw, 28px); 
-    border: 2px solid #e9ecef; 
-    border-radius: 16px; 
-    width: clamp(180px, 45vw, 260px); 
-    text-align: center;
-}
-#save-budget {
-    padding: clamp(14px, 4vw, 20px) clamp(24px, 6vw, 36px); 
-    background: #27ae60; 
-    color: white;
-    border: none; 
-    border-radius: 16px; 
-    font-weight: 700; 
-    cursor: pointer;
-    font-size: clamp(15px, 4vw, 18px);
-}
-
-.progress-circle {
-    position: relative; 
-    width: clamp(160px, 40vw, 240px); 
-    height: clamp(160px, 40vw, 240px); 
-    margin: 0 auto;
-}
-.progress-circle svg { 
-    width: 100%; 
-    height: 100%; 
-    transform: rotate(-90deg); 
-}
-.progress-bg { 
-    fill: none; 
-    stroke: #e9ecef; 
-    stroke-width: clamp(8px, 2.5vw, 12px); 
-}
-.progress-fill { 
-    fill: none; 
-    stroke: linear-gradient(135deg, #667eea, #764ba2); 
-    stroke-width: clamp(8px, 2.5vw, 12px); 
-    stroke-linecap: round;
-    stroke-dasharray: 502; 
-    stroke-dashoffset: 502; 
-    transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.progress-text {
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%);
-    font-size: clamp(24px, 7vw, 36px); 
-    font-weight: 800; 
-    color: #333;
-}
-
-.mobile-nav {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 28px;
-    padding: 12px 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    display: flex;
-    gap: 12px;
-    z-index: 1000;
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.nav-btn {
-    width: 60px;
-    height: 60px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-    color: #667eea;
-    font-size: 24px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    touch-action: manipulation;
-    position: relative;
-}
-
-.nav-btn.active {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 10px 30px rgba(102,126,234,0.4);
-}
-
-.nav-btn:active {
-    transform: scale(0.95);
-}
-
-/* 響應式 */
-@media (max-width: 768px) {
-    .desktop-tabs { display: none; }
-    .mobile-nav { display: flex; }
-    
-    .stats { 
-        flex-direction: column; 
-        gap: clamp(10px, 3vw, 18px);
-        align-items: center;
+class ExpenseTracker {
+    constructor() {
+        this.expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        this.budget = parseFloat(localStorage.getItem('monthlyBudget')) || 30000;
+        this.monthDay = parseInt(localStorage.getItem('monthDay')) || 25;
+        this.currentPeriod = 'current';
+        this.selectedExpenses = new Set();
+        this.quickButtons = JSON.parse(localStorage.getItem('quickButtons')) || [
+            { amount: 50, category: '飲食' },
+            { amount: 150, category: '飲食' },
+            { amount: 300, category: '飲食' },
+            { amount: 100, category: '交通' }
+        ];
+        this.chartCanvas = null;
+        this.init();
     }
-    
-    .input-group { 
-        grid-template-columns: 1fr; 
-        gap: clamp(14px, 4vw, 20px);
+
+    init() {
+        this.bindElements();
+        this.bindEvents();
+        this.switchTab('add');
+        this.renderList();
+        this.updateStats();
+        this.updateBudgetDisplay();
+        this.loadQuickButtons();
+        this.chartCanvas = document.getElementById('expense-chart');
     }
-    
-    .chart-header { 
-        flex-direction: column; 
-        gap: clamp(18px, 5vw, 25px);
-        text-align: center;
+
+    bindElements() {
+        this.categoryEl = document.getElementById('category');
+        this.amountEl = document.getElementById('amount');
+        this.noteEl = document.getElementById('note');
+        this.expenseList = document.getElementById('expense-list');
+        this.monthTotalEl = document.getElementById('month-total');
+        this.budgetLeftEl = document.getElementById('budget-left');
+        this.monthlyBudgetEl = document.getElementById('monthly-budget');
+        this.budgetPercentEl = document.getElementById('budget-percent');
+        this.deleteSelectedBtn = document.getElementById('delete-selected');
+        this.selectedCountEl = document.getElementById('selected-count');
+        this.selectAllBtn = document.getElementById('select-all');
     }
-    
-    .expense-item {
-        flex-direction: column;
-        text-align: center;
-        gap: clamp(15px, 4vw, 25px);
+
+    bindEvents() {
+        document.getElementById('add-expense').addEventListener('click', () => this.addExpense());
+        
+        this.amountEl?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.addExpense();
+        });
+
+        document.querySelectorAll('.tab-btn, .nav-btn, .period-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (btn.dataset.tab) {
+                    this.switchTab(btn.dataset.tab);
+                    document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+                    document.querySelector(`.nav-btn[data-tab="${btn.dataset.tab}"]`)?.classList.add('active');
+                }
+                if (btn.dataset.period) {
+                    this.currentPeriod = btn.dataset.period;
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.renderList();
+                    this.updateStats();
+                    this.updateBudgetDisplay();
+                    this.updateChart();
+                }
+            });
+        });
+
+        // 快速新增按鈕事件
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('quick-add-btn')) {
+                const index = parseInt(e.target.dataset.index);
+                this.useQuickButton(index);
+            }
+        });
+
+        // 清單功能
+        document.getElementById('delete-selected').addEventListener('click', () => this.deleteSelected());
+        document.getElementById('select-all').addEventListener('click', () => this.toggleSelectAll());
+
+        document.getElementById('save-budget').addEventListener('click', () => this.saveBudget());
     }
-    
-    .expense-amount {
-        order: -1;
-        font-size: clamp(24px, 8vw, 32px);
+
+    loadQuickButtons() {
+        document.querySelectorAll('.quick-amount').forEach((input, index) => {
+            input.value = this.quickButtons[index]?.amount || '';
+        });
+        document.querySelectorAll('.quick-category').forEach((select, index) => {
+            select.value = this.quickButtons[index]?.category || '飲食';
+        });
     }
-    
-    .delete-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        align-self: flex-start;
+
+    useQuickButton(index) {
+        const amountInput = document.querySelector(`.quick-amount[data-index="${index}"]`);
+        const categorySelect = document.querySelector(`.quick-category[data-index="${index}"]`);
+        
+        const amount = parseFloat(amountInput.value);
+        if (!amount || amount <= 0 || isNaN(amount)) {
+            this.showToast('❌ 請輸入有效金額（大於0）！');
+            amountInput.focus();
+            return;
+        }
+
+        // 自動新增支出
+        this.amountEl.value = amount;
+        this.categoryEl.value = categorySelect.value;
+        this.noteEl.value = '';
+        this.addExpense();
+
+        // 保存快速按鈕設定
+        this.quickButtons[index] = {
+            amount,
+            category: categorySelect.value
+        };
+        localStorage.setItem('quickButtons', JSON.stringify(this.quickButtons));
+    }
+
+    validateInput() {
+        const amount = parseFloat(this.amountEl.value);
+        if (!amount || amount <= 0 || isNaN(amount)) {
+            this.showToast('❌ 請輸入有效金額（大於0）！');
+            this.amountEl.focus();
+            return false;
+        }
+        return true;
+    }
+
+    addExpense() {
+        if (!this.validateInput()) return;
+
+        const category = this.categoryEl.value;
+        const amount = parseFloat(this.amountEl.value);
+        const note = this.noteEl.value.trim();
+
+        const expense = {
+            id: Date.now(),
+            category,
+            amount,
+            note,
+            date: new Date().toISOString()
+        };
+
+        this.expenses.unshift(expense);
+        this.saveData();
+        
+        this.amountEl.value = '';
+        this.noteEl.value = '';
+        this.categoryEl.value = '飲食';
+        
+        this.renderList();
+        this.updateStats();
+        this.updateBudgetDisplay();
+        this.updateChart();
+        this.showToast('✅ 新增成功！');
+    }
+
+    deleteSelected() {
+        if (this.selectedExpenses.size === 0) return;
+        
+        if (confirm(`確定刪除 ${this.selectedExpenses.size} 筆勾選的支出？`)) {
+            this.expenses = this.expenses.filter(e => !this.selectedExpenses.has(e.id));
+            this.selectedExpenses.clear();
+            this.saveData();
+            this.renderList();
+            this.updateStats();
+            this.updateBudgetDisplay();
+            this.updateChart();
+            this.updateSelectionUI();
+            this.showToast(`🗑️ 刪除 ${this.selectedExpenses.size} 筆成功！`);
+        }
+    }
+
+    toggleSelectAll() {
+        const periodExpenses = this.getCurrentPeriodExpenses();
+        if (this.selectedExpenses.size === periodExpenses.length) {
+            this.selectedExpenses.clear();
+        } else {
+            periodExpenses.forEach(expense => this.selectedExpenses.add(expense.id));
+        }
+        this.renderList();
+        this.updateSelectionUI();
+    }
+
+    updateSelectionUI() {
+        const count = this.selectedExpenses.size;
+        this.selectedCountEl.textContent = count;
+        this.deleteSelectedBtn.disabled = count === 0;
+    }
+
+    deleteExpense(id) {
+        if (confirm('確定刪除這筆支出？')) {
+            this.expenses = this.expenses.filter(e => e.id !== id);
+            if (this.selectedExpenses.has(id)) {
+                this.selectedExpenses.delete(id);
+            }
+            this.saveData();
+            this.renderList();
+            this.updateStats();
+            this.updateBudgetDisplay();
+            this.updateChart();
+            this.updateSelectionUI();
+            this.showToast('🗑️ 刪除成功！');
+        }
+    }
+
+    saveBudget() {
+        this.budget = parseFloat(this.monthlyBudgetEl.value) || 0;
+        localStorage.setItem('monthlyBudget', this.budget);
+        this.updateBudgetDisplay();
+        this.showToast('💰 預算儲存成功！');
+    }
+
+    getCurrentPeriodExpenses() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        return this.currentPeriod === 'previous' ? 
+            this.getPeriodExpenses(year, month - 1) : 
+            this.getPeriodExpenses(year, month);
+    }
+
+    getPeriodExpenses(year, month) {
+        return this.expenses.filter(expense => {
+            const expenseDate = new Date(expense.date);
+            const periodStart = new Date(year, month, this.monthDay);
+            const periodEnd = new Date(year, month + 1, this.monthDay);
+            periodEnd.setHours(23, 59, 59, 999);
+            return expenseDate >= periodStart && expenseDate < periodEnd;
+        });
+    }
+
+    renderList() {
+        const list = this.expenseList;
+        const periodExpenses = this.getCurrentPeriodExpenses();
+        
+        if (periodExpenses.length === 0) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-wallet"></i>
+                    <p>本期還沒有支出記錄<br>點上方快速按鈕新增試試！</p>
+                </div>
+            `;
+            this.updateSelectionUI();
+            return;
+        }
+
+        list.innerHTML = periodExpenses.slice(0, 50).map(expense => {
+            const date = new Date(expense.date).toLocaleDateString('zh-TW');
+            const icon = this.getCategoryIcon(expense.category);
+            const isSelected = this.selectedExpenses.has(expense.id);
+            return `
+                <div class="expense-item ${isSelected ? 'selected' : ''}" data-id="${expense.id}">
+                    <input type="checkbox" class="expense-checkbox" ${isSelected ? 'checked' : ''} data-id="${expense.id}">
+                    <div class="category-icon">${icon}</div>
+                    <div class="expense-info">
+                        <h4>${expense.category}</h4>
+                        ${expense.note ? `<p>${expense.note}</p>` : ''}
+                        <div class="expense-date">${date}</div>
+                    </div>
+                    <div class="expense-amount">-${expense.amount.toLocaleString()}</div>
+                    <button class="delete-btn" data-id="${expense.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+        }).join('');
+
+        // 事件委派
+        list.addEventListener('change', (e) => {
+            if (e.target.classList.contains('expense-checkbox')) {
+                const id = parseInt(e.target.dataset.id);
+                if (e.target.checked) {
+                    this.selectedExpenses.add(id);
+                } else {
+                    this.selectedExpenses.delete(id);
+                }
+                e.target.closest('.expense-item').classList.toggle('selected', e.target.checked);
+                this.updateSelectionUI();
+            }
+        });
+
+        list.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-btn')) {
+                const id = parseInt(e.target.closest('.delete-btn').dataset.id);
+                this.deleteExpense(id);
+            }
+        });
+
+        this.updateSelectionUI();
+    }
+
+    getCategoryIcon(category) {
+        const icons = {'飲食': '🍽️', '交通': '🚗', '購物': '🛒', '娛樂': '🎮', '生活': '🏠', '投資': '📈'};
+        return icons[category] || '💰';
+    }
+
+    updateStats() {
+        const periodExpenses = this.getCurrentPeriodExpenses();
+        const total = periodExpenses.reduce((sum, e) => sum + e.amount, 0);
+        this.monthTotalEl.textContent = total.toLocaleString();
+    }
+
+    updateBudgetDisplay() {
+        this.monthlyBudgetEl.value = this.budget;
+        const periodExpenses = this.getCurrentPeriodExpenses();
+        const spent = periodExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const remaining = this.budget - spent;
+        this.budgetLeftEl.textContent = remaining.toLocaleString();
+        
+        const percentage = this.budget > 0 ? Math.min((spent / this.budget) * 100, 100) : 0;
+        this.budgetPercentEl.textContent = percentage.toFixed(0) + '%';
+        
+        const progressFill = document.querySelector('.progress-fill');
+        if (progressFill) {
+            const circumference = 502;
+            const offset = circumference * (1 - percentage / 100);
+            progressFill.style.strokeDashoffset = offset;
+        }
+    }
+
+    updateChart() {
+        if (!this.chartCanvas) return;
+        
+        const canvas = this.chartCanvas;
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.getBoundingClientRect();
+        
+        // 修復畫布尺寸問題
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        
+        const periodExpenses = this.getCurrentPeriodExpenses();
+        if (periodExpenses.length === 0) {
+            ctx.fillStyle = '#e9ecef';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '24px sans-serif';
+            ctx.fillText('沒有資料', rect.width / 2, rect.height / 2);
+            this.renderEmptyLegend();
+            return;
+        }
+        
+        const categoryTotals = {};
+        let totalAmount = 0;
+        periodExpenses.forEach(expense => {
+            categoryTotals[expense.category] = (categoryTotals[expense.category] || 0) + expense.amount;
+            totalAmount += expense.amount;
+        });
+
+        const categories = Object.keys(categoryTotals);
+        const amounts = Object.values(categoryTotals);
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const radius = Math.min(centerX, centerY, 200) * 0.7;
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#F7DC6F', '#96CEB4', '#FECA57'];
+
+        let startAngle = 0;
+        categories.forEach((category, index) => {
+            const amount = amounts[index];
+            const percentage = (amount / totalAmount) * 100;
+            const sliceAngle = (percentage / 100) * 2 * Math.PI;
+            const endAngle = startAngle + sliceAngle;
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = colors[index % colors.length];
+            ctx.shadowColor = 'rgba(0,0,0,0.3)';
+            ctx.shadowBlur = 15;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+            ctx.stroke();
+
+            startAngle = endAngle;
+        });
+
+        this.renderLegend(categoryTotals, totalAmount, colors);
+    }
+
+    renderLegend(categoryTotals, totalAmount, colors) {
+        const legend = document.getElementById('chart-legend');
+        legend.innerHTML = Object.entries(categoryTotals).map(([category, amount], index) => {
+            const percentage = ((amount / totalAmount) * 100).toFixed(1);
+            return `
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: ${colors[index % colors.length]}"></div>
+                    <span>${category}: ${amount.toLocaleString()}元 (${percentage}%)</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    renderEmptyLegend() {
+        const legend = document.getElementById('chart-legend');
+        legend.innerHTML = '<p style="color: #999; font-style: italic;">沒有資料顯示圖表</p>';
+    }
+
+    switchTab(tab) {
+        document.querySelectorAll('.tab-btn, .nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+        document.getElementById(tab).classList.add('active');
+        
+        if (tab === 'list') this.renderList();
+        if (tab === 'chart') {
+            this.updateChart();
+        }
+        if (tab === 'budget') this.updateBudgetDisplay();
+        
+        document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+        document.querySelector(`.nav-btn[data-tab="${tab}"]`)?.classList.add('active');
+    }
+
+    saveData() {
+        localStorage.setItem('expenses', JSON.stringify(this.expenses));
+    }
+
+    showToast(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        Object.assign(toast.style, {
+            position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)',
+            background: 'linear-gradient(135deg, #27ae60, #2ecc71)', color: 'white',
+            padding: '15px 30px', borderRadius: '16px', zIndex: '10001',
+            fontWeight: '700', boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
+        });
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
     }
 }
 
-@media (max-width: 480px) {
-    body { padding: clamp(8px, 3vw, 15px); }
-    
-    .input-section, .tab-content {
-        padding: clamp(20px, 5vw, 30px);
-    }
-}
+const tracker = new ExpenseTracker();
+window.tracker = tracker;

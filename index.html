@@ -42,16 +42,68 @@
                     <button id="add-expense" aria-label="新增支出"><i class="fas fa-plus"></i> 新增</button>
                 </div>
                 <div class="quick-add">
-                    <button class="quick-btn" data-amount="50">咖啡 ☕ 50</button>
-                    <button class="quick-btn" data-amount="150">午餐 🍱 150</button>
-                    <button class="quick-btn" data-amount="300">晚餐 🍲 300</button>
-                    <button class="quick-btn" data-amount="100">交通 🚗 100</button>
+                    <div class="quick-item">
+                        <input type="number" class="quick-amount" data-index="0" placeholder="50" min="1">
+                        <select class="quick-category" data-index="0">
+                            <option value="飲食">🍽️ 飲食</option>
+                            <option value="交通">🚗 交通</option>
+                            <option value="購物">🛒 購物</option>
+                            <option value="娛樂">🎮 娛樂</option>
+                            <option value="生活">🏠 生活</option>
+                            <option value="投資">📈 投資</option>
+                        </select>
+                        <button class="quick-add-btn" data-index="0"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="quick-item">
+                        <input type="number" class="quick-amount" data-index="1" placeholder="150" min="1">
+                        <select class="quick-category" data-index="1">
+                            <option value="飲食">🍽️ 飲食</option>
+                            <option value="交通">🚗 交通</option>
+                            <option value="購物">🛒 購物</option>
+                            <option value="娛樂">🎮 娛樂</option>
+                            <option value="生活">🏠 生活</option>
+                            <option value="投資">📈 投資</option>
+                        </select>
+                        <button class="quick-add-btn" data-index="1"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="quick-item">
+                        <input type="number" class="quick-amount" data-index="2" placeholder="300" min="1">
+                        <select class="quick-category" data-index="2">
+                            <option value="飲食">🍽️ 飲食</option>
+                            <option value="交通">🚗 交通</option>
+                            <option value="購物">🛒 購物</option>
+                            <option value="娛樂">🎮 娛樂</option>
+                            <option value="生活">🏠 生活</option>
+                            <option value="投資">📈 投資</option>
+                        </select>
+                        <button class="quick-add-btn" data-index="2"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="quick-item">
+                        <input type="number" class="quick-amount" data-index="3" placeholder="100" min="1">
+                        <select class="quick-category" data-index="3">
+                            <option value="飲食">🍽️ 飲食</option>
+                            <option value="交通">🚗 交通</option>
+                            <option value="購物">🛒 購物</option>
+                            <option value="娛樂">🎮 娛樂</option>
+                            <option value="生活">🏠 生活</option>
+                            <option value="投資">📈 投資</option>
+                        </select>
+                        <button class="quick-add-btn" data-index="3"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- 支出清單 -->
         <div id="list" class="tab-content">
+            <div class="list-header">
+                <button id="delete-selected" class="delete-selected-btn" disabled>
+                    <i class="fas fa-trash"></i> 刪除勾選項目 (<span id="selected-count">0</span>)
+                </button>
+                <button id="select-all" class="select-all-btn">
+                    <i class="fas fa-check-square"></i> 全選
+                </button>
+            </div>
             <div id="expense-list">
                 <div class="empty-state">
                     <i class="fas fa-wallet"></i>
@@ -70,6 +122,7 @@
             </div>
             <div class="chart-container">
                 <canvas id="expense-chart"></canvas>
+                <div id="chart-legend"></div>
             </div>
         </div>
 
